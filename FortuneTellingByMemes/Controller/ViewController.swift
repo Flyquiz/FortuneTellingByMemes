@@ -15,8 +15,8 @@ final class ViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Введите свой вопрос здесь"
-//        textField.layer.borderWidth = 1
-        textField.layer.cornerRadius = 5
+        textField.layer.borderWidth = 0.5
+        textField.layer.cornerRadius = 10
         textField.backgroundColor = .white
         textField.textAlignment = .center
         
@@ -29,6 +29,7 @@ final class ViewController: UIViewController {
         button.setTitle("Получить предсказание", for: .normal)
         button.backgroundColor = .systemBlue
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        button.layer.cornerRadius = 10
         return button
     }()
     
@@ -40,7 +41,7 @@ final class ViewController: UIViewController {
     
     
     private func setupLayout() {
-        self.title = "Fortune Telling By Memes"
+        navigationItem.title = "Fortune Telling By Memes"
         view.backgroundColor = .systemGray6
         
         [questionTextField,
@@ -60,14 +61,15 @@ final class ViewController: UIViewController {
     }
     
     @objc private func buttonAction() {
-        networkManager.fetchMemes { [weak self] result in
-            switch result {
-            case .success(_):
-                print("success")
-            case .failure(let error):
-                print("failure: \(error)")
-            }
-        }
+//        networkManager.fetchMemes { [weak self] result in
+//            switch result {
+//            case .success(_):
+//                print("success")
+//            case .failure(let error):
+//                print("failure: \(error)")
+//            }
+//        }
+        navigationController?.pushViewController(FortuneTellingViewController(), animated: true)
     }
     
 }
