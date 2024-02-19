@@ -9,6 +9,8 @@ import UIKit
 
 final class ViewController: UIViewController {
     
+    private let networkManager = NetworkManager.shared
+    
     private lazy var questionTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -26,6 +28,7 @@ final class ViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Получить предсказание", for: .normal)
         button.backgroundColor = .systemBlue
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         return button
     }()
     
@@ -54,6 +57,17 @@ final class ViewController: UIViewController {
             fortuneTellingButton.topAnchor.constraint(equalTo: questionTextField.bottomAnchor, constant: 30),
             fortuneTellingButton.widthAnchor.constraint(equalTo: questionTextField.widthAnchor)
         ])
+    }
+    
+    @objc private func buttonAction() {
+        networkManager.fetchMemes { [weak self] result in
+            switch result {
+            case .success(_):
+                print("success")
+            case .failure(let error):
+                print("failure: \(error)")
+            }
+        }
     }
     
 }
