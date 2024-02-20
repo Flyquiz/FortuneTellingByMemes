@@ -61,15 +61,20 @@ final class ViewController: UIViewController {
     }
     
     @objc private func buttonAction() {
-//        networkManager.fetchMemes { [weak self] result in
-//            switch result {
-//            case .success(_):
-//                print("success")
-//            case .failure(let error):
-//                print("failure: \(error)")
-//            }
-//        }
-        navigationController?.pushViewController(FortuneTellingViewController(), animated: true)
+        networkManager.fetchMemes { [weak self] result in
+            switch result {
+            case .success(let result):
+                DispatchQueue.main.async {
+                    let destinationVC = FortuneTellingViewController(downloadedMemes: result)
+                    self?.navigationController?.pushViewController(destinationVC, animated: true)
+                }
+            case .failure(let error):
+                let alertController = UIAlertController(title: "Error", message: error.title, preferredStyle: .alert)
+                let alertAction = UIAlertAction(title: "OK", style: .destructive)
+                alertController.addAction(alertAction)
+            }
+        }
+//        navigationController?.pushViewController(FortuneTellingViewController(), animated: true)
     }
     
 }

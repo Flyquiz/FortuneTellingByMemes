@@ -9,6 +9,8 @@ import UIKit
 
 final class FortuneTellingViewController: UIViewController {
     
+    private let downloadedMemes: [Meme]
+    
     //MARK: UIElements
     private let questionLabel: UILabel = {
         let label = UILabel()
@@ -27,14 +29,28 @@ final class FortuneTellingViewController: UIViewController {
     private lazy var acceptButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .black
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 40
+
+        let symbolFont = UIFont.systemFont(ofSize: 50)
+        let configuration = UIImage.SymbolConfiguration(font: symbolFont)
+        let symbolImage = UIImage(systemName: "hand.thumbsup.fill", withConfiguration: configuration)
+        button.setImage(symbolImage, for: .normal)
+        button.tintColor = .white
         return button
     }()
     
     private lazy var rejectButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .black
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 40
+        
+        let symbolFont = UIFont.systemFont(ofSize: 50)
+        let configuration = UIImage.SymbolConfiguration(font: symbolFont)
+        let symbolImage = UIImage(systemName: "hand.thumbsdown.fill", withConfiguration: configuration)
+        button.setImage(symbolImage, for: .normal)
+        button.tintColor = .white
         return button
     }()
     
@@ -58,9 +74,19 @@ final class FortuneTellingViewController: UIViewController {
     }()
     
     //MARK: LifeCycle
+    required init(downloadedMemes: [Meme]) {
+        self.downloadedMemes = downloadedMemes
+        super.init(nibName: nil, bundle: nil)
+    }
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
+        fetchMemeImage()
     }
     
     
@@ -102,5 +128,17 @@ final class FortuneTellingViewController: UIViewController {
             rejectButton.widthAnchor.constraint(equalTo: acceptButton.widthAnchor),
             rejectButton.heightAnchor.constraint(equalTo: acceptButton.heightAnchor)
         ])
+    }
+    
+    private func fetchMemeImage() {
+        let randomMeme = downloadedMemes.randomElement()
+        guard let randomMeme else { return }
+        
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let imageData = try? Data(contentsOf: randomMeme.url) else { return }
+            DispatchQueue.main.async {
+                self?.memeImageView.image = UIImage(data: imageData)
+            }
+        }
     }
 }
