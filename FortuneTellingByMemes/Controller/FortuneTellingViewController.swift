@@ -11,11 +11,13 @@ final class FortuneTellingViewController: UIViewController {
     
     private let downloadedMemes: [Meme]
     
+    private var question: String
+    
     //MARK: UIElements
     private let questionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "TEXTTEXTTEXTTEXTTEXTTEXTTEXTTEXT"
+        label.font = .systemFont(ofSize: 20)
         return label
     }()
     
@@ -51,6 +53,7 @@ final class FortuneTellingViewController: UIViewController {
         let symbolImage = UIImage(systemName: "hand.thumbsdown.fill", withConfiguration: configuration)
         button.setImage(symbolImage, for: .normal)
         button.tintColor = .white
+        button.addTarget(self, action: #selector(rejectAction), for: .touchUpInside)
         return button
     }()
     
@@ -74,8 +77,10 @@ final class FortuneTellingViewController: UIViewController {
     }()
     
     //MARK: LifeCycle
-    required init(downloadedMemes: [Meme]) {
+    required init(downloadedMemes: [Meme], question: String) {
         self.downloadedMemes = downloadedMemes
+        self.question = question
+        self.questionLabel.text = question
         super.init(nibName: nil, bundle: nil)
     }
     @available(*, unavailable)
@@ -140,5 +145,9 @@ final class FortuneTellingViewController: UIViewController {
                 self?.memeImageView.image = UIImage(data: imageData)
             }
         }
+    }
+    
+    @objc private func rejectAction() {
+        fetchMemeImage()
     }
 }
