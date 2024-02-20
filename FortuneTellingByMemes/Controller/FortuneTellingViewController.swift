@@ -13,7 +13,7 @@ final class FortuneTellingViewController: UIViewController {
     
     private var question: String
     
-    //MARK: UIElements
+    //MARK: - UIElements
     private let questionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -28,17 +28,28 @@ final class FortuneTellingViewController: UIViewController {
         return imageView
     }()
     
+    private let imageCover: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        view.isHidden = false
+        return view
+    }()
+
     private lazy var acceptButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 40
+        button.alpha = 0.5
 
         let symbolFont = UIFont.systemFont(ofSize: 50)
         let configuration = UIImage.SymbolConfiguration(font: symbolFont)
         let symbolImage = UIImage(systemName: "hand.thumbsup.fill", withConfiguration: configuration)
         button.setImage(symbolImage, for: .normal)
         button.tintColor = .white
+        
+        button.addTarget(self, action: #selector(acceptAction), for: .touchUpInside)
+        button.isUserInteractionEnabled = false
         return button
     }()
     
@@ -47,13 +58,16 @@ final class FortuneTellingViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 40
+        button.alpha = 0.5
         
         let symbolFont = UIFont.systemFont(ofSize: 50)
         let configuration = UIImage.SymbolConfiguration(font: symbolFont)
         let symbolImage = UIImage(systemName: "hand.thumbsdown.fill", withConfiguration: configuration)
         button.setImage(symbolImage, for: .normal)
         button.tintColor = .white
+        
         button.addTarget(self, action: #selector(rejectAction), for: .touchUpInside)
+        button.isUserInteractionEnabled = false
         return button
     }()
     
@@ -76,7 +90,7 @@ final class FortuneTellingViewController: UIViewController {
         return stackView
     }()
     
-    //MARK: LifeCycle
+    //MARK: - LifeCycle
     required init(downloadedMemes: [Meme], question: String) {
         self.downloadedMemes = downloadedMemes
         self.question = question
@@ -88,10 +102,18 @@ final class FortuneTellingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
         fetchMemeImage()
+        animateImageCover(isTransparent: imageCover.isHidden)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        memeImageView.addSubview(imageCover)
+        imageCover.frame = memeImageView.frame
     }
     
     
@@ -135,6 +157,7 @@ final class FortuneTellingViewController: UIViewController {
         ])
     }
     
+    //MARK: Networking
     private func fetchMemeImage() {
         let randomMeme = downloadedMemes.randomElement()
         guard let randomMeme else { return }
@@ -147,7 +170,68 @@ final class FortuneTellingViewController: UIViewController {
         }
     }
     
+    //MARK: Actions
     @objc private func rejectAction() {
-        fetchMemeImage()
+        animateImageCover(isTransparent: imageCover.isHidden)
+    }
+    
+    @objc private func acceptAction() {}
+    
+    //MARK: Animations
+    private func animateImageCover(isTransparent: Bool) {
+        
+        enum Durations {
+            case toHideImage
+            case toShowImage
+            case toButtons
+            
+            var values: Double {
+                switch self {
+                case .toHideImage:
+                    return 0.25
+                case .toShowImage:
+                    return 2
+                case .toButtons:
+                    return 0.25
+                }
+            }
+        }
+        
+        switch isTransparent {
+        case true:
+            acceptButton.isUserInteractionEnabled = false
+            rejectButton.isUserInteractionEnabled = false
+            imageCover.isHidden = !isTransparent
+            
+            UIView.animate(withDuration: Durations.toHideImage.values, 
+                           delay: 0,
+                           options: .curveEaseInOut) { [self] in
+                imageCover.alpha = 1
+                acceptButton.alpha = 0.5
+                rejectButton.alpha = 0.5
+                
+            } completion: { [self] bool in
+                fetchMemeImage()
+                animateImageCover(isTransparent: imageCover.isHidden)
+            }
+            
+        case false:
+            UIView.animate(withDuration: Durations.toShowImage.values, 
+                           delay: 1.0,
+                           options: .curveEaseInOut) {
+                self.imageCover.alpha = 0
+                
+            } completion: { _ in
+                self.imageCover.isHidden = !isTransparent
+                UIView.animate(withDuration: Durations.toButtons.values) {
+                    self.acceptButton.alpha = 1.0
+                    self.rejectButton.alpha = 1.0
+                    
+                } completion: { bool in
+                    self.acceptButton.isUserInteractionEnabled = bool
+                    self.rejectButton.isUserInteractionEnabled = bool
+                }
+            }
+        }
     }
 }
