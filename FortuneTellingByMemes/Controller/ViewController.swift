@@ -14,12 +14,12 @@ final class ViewController: UIViewController {
     private lazy var questionTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.delegate = self
         textField.placeholder = "Введите свой вопрос здесь"
         textField.layer.borderWidth = 0.5
         textField.layer.cornerRadius = 10
         textField.backgroundColor = .white
         textField.textAlignment = .center
-        
         return textField
     }()
     
@@ -36,6 +36,7 @@ final class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addGestureToHideKeyboard()
         setupLayout()
     }
     
@@ -63,9 +64,9 @@ final class ViewController: UIViewController {
     @objc private func buttonAction() {
         networkManager.fetchMemes { [weak self] result in
             switch result {
-            case .success(let result):
+            case .success(let memes):
                 DispatchQueue.main.async {
-                    let destinationVC = FortuneTellingViewController(downloadedMemes: result, question: self?.questionTextField.text ?? "No question")
+                    let destinationVC = FortuneTellingViewController(downloadedMemes: memes, question: self?.questionTextField.text ?? "No question")
                     self?.navigationController?.pushViewController(destinationVC, animated: true)
                 }
             case .failure(let error):
@@ -74,8 +75,22 @@ final class ViewController: UIViewController {
                 alertController.addAction(alertAction)
             }
         }
-//        navigationController?.pushViewController(FortuneTellingViewController(), animated: true)
     }
     
 }
 
+
+
+//MARK: Extensions for textField
+extension ViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+    }
+}
+
+extension UIView {
+    func addGestureToHideKeyboard() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(endEditing))
+        addGestureRecognizer(tapGesture)
+    }
+}
