@@ -66,7 +66,7 @@ final class ViewController: UIViewController {
             switch result {
             case .success(let memes):
                 DispatchQueue.main.async {
-                    let destinationVC = FortuneTellingViewController(downloadedMemes: memes, question: self?.questionTextField.text ?? "No question")
+                    let destinationVC = FortuneTellingViewController(downloadedMemes: memes, question: self!.questionTextField.text ?? "")
                     self?.navigationController?.pushViewController(destinationVC, animated: true)
                 }
             case .failure(let error):
