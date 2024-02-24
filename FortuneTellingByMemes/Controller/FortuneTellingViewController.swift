@@ -9,9 +9,13 @@ import UIKit
 
 final class FortuneTellingViewController: UIViewController {
     
+    private let dataStore = DataStore.shared
+    
     private let downloadedMemes: [Meme]
     
-    private var question: String
+    private var currentMeme: Meme
+    
+    private let question: String
     
     //MARK: - UIElements
     private let questionLabel: UILabel = {
@@ -175,7 +179,16 @@ final class FortuneTellingViewController: UIViewController {
         animateImageCover(isTransparent: imageCover.isHidden)
     }
     
-    @objc private func acceptAction() {}
+    @objc private func acceptAction() {
+        let alertController = UIAlertController(title: "Желаете сохранить предсказание?", message: "Ваше предсказание будет сохранено во вкладку избранное", preferredStyle: .alert)
+        let saveAction = UIAlertAction(title: "Сохранить", style: .destructive) { _ in
+            
+        }
+        let returnAction = UIAlertAction(title: "Вернуться", style: .default)
+        alertController.addAction(saveAction)
+        alertController.addAction(returnAction)
+        present(alertController, animated: true)
+    }
     
     //MARK: Animations
     private func animateImageCover(isTransparent: Bool) {

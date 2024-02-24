@@ -16,7 +16,7 @@ struct DataQuery: Decodable {
 }
 
 struct Meme: Codable {
-    let name: String
+    let name: String?
     let url: URL
     let question: String?
 }

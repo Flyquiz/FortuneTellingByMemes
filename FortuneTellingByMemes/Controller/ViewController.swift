@@ -28,7 +28,7 @@ final class ViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Получить предсказание", for: .normal)
         button.backgroundColor = .systemBlue
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        button.addTarget(self, action: #selector(fortuneButtonAction), for: .touchUpInside)
         button.layer.cornerRadius = 10
         return button
     }()
@@ -42,8 +42,11 @@ final class ViewController: UIViewController {
     
     
     private func setupLayout() {
-        navigationItem.title = "Fortune Telling By Memes"
         view.backgroundColor = .systemGray6
+        navigationItem.title = "Fortune Telling By Memes"
+        let toFavoritesButton = UIBarButtonItem(image: UIImage(systemName: "star.fill"), style: .plain, target: self, action: #selector(favoriteButtonAction))
+        toFavoritesButton.tintColor = .systemYellow
+        navigationItem.rightBarButtonItem = toFavoritesButton
         
         [questionTextField,
          fortuneTellingButton].forEach { view.addSubview($0) }
@@ -61,7 +64,7 @@ final class ViewController: UIViewController {
         ])
     }
     
-    @objc private func buttonAction() {
+    @objc private func fortuneButtonAction() {
         networkManager.fetchMemes { [weak self] result in
             switch result {
             case .success(let memes):
@@ -75,6 +78,10 @@ final class ViewController: UIViewController {
                 alertController.addAction(alertAction)
             }
         }
+    }
+    
+    @objc private func favoriteButtonAction() {
+        navigationController?.pushViewController(FavoritesMemesTableViewController(), animated: true)
     }
     
 }

@@ -11,17 +11,26 @@ final class DataStore {
     
     static let shared = DataStore()
     
-    private var memeStorage = [Meme]()
+    public var memes = [Meme]() {
+        didSet {
+            do {
+                let data = try encoder.encode(memes)
+                userDefaults.setValue(data, forKey: "memes")
+            } catch {
+                print("Can't encode data for saving")
+            }
+        }
+    }
     
     private let userDefaults = UserDefaults.standard
     
     private let decoder = JSONDecoder()
-    
+    private let encoder = JSONEncoder()
     
     private init() {
         guard let data = userDefaults.data(forKey: "memes") else { return }
         do {
-            memeStorage = try decoder.decode([Meme].self, from: data)
+            memes = try decoder.decode([Meme].self, from: data)
         } catch {
             print("Can't download intenral data")
         }
