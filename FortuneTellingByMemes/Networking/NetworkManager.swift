@@ -60,4 +60,14 @@ final class NetworkManager {
             }
         }.resume()
     }
+    
+    public func fetchMemeImage(from meme: Meme, completion: @escaping (UIImage) -> ()) {
+        
+        DispatchQueue.global(qos: .utility).async {
+            guard let imageData = try? Data(contentsOf: meme.url) else { return }
+            DispatchQueue.main.async {
+                completion( UIImage(data: imageData)! )
+            }
+        }
+    }
 }

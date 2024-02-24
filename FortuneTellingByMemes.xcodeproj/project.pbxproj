@@ -17,6 +17,7 @@
 		AA63F5A82B838157009FEFAF /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA63F5A72B838157009FEFAF /* Model.swift */; };
 		AA7064E12B88C84E00B641FA /* FavoritesMemesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7064E02B88C84E00B641FA /* FavoritesMemesTableViewController.swift */; };
 		AA7064E42B88CDAF00B641FA /* FavoriteMemeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7064E32B88CDAF00B641FA /* FavoriteMemeCell.swift */; };
+		AAEF917D2B8A4E9700E1B6CD /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEF917C2B8A4E9700E1B6CD /* Extensions.swift */; };
 		AAFDA1F82B83C02300863247 /* FortuneTellingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFDA1F72B83C02300863247 /* FortuneTellingViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		AA63F5A72B838157009FEFAF /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		AA7064E02B88C84E00B641FA /* FavoritesMemesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesMemesTableViewController.swift; sourceTree = "<group>"; };
 		AA7064E32B88CDAF00B641FA /* FavoriteMemeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteMemeCell.swift; sourceTree = "<group>"; };
+		AAEF917C2B8A4E9700E1B6CD /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		AAFDA1F72B83C02300863247 /* FortuneTellingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FortuneTellingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 		AA63F58C2B836F00009FEFAF /* FortuneTellingByMemes */ = {
 			isa = PBXGroup;
 			children = (
+				AAEF917C2B8A4E9700E1B6CD /* Extensions.swift */,
 				AA63F5A12B837EA5009FEFAF /* Application */,
 				AA63F5A42B837F08009FEFAF /* Model */,
 				AA7064E22B88CD7C00B641FA /* View */,
@@ -197,6 +200,7 @@
 				AA63F5A62B837F3E009FEFAF /* NetworkManager.swift in Sources */,
 				AA7064E12B88C84E00B641FA /* FavoritesMemesTableViewController.swift in Sources */,
 				AA63F5922B836F00009FEFAF /* ViewController.swift in Sources */,
+				AAEF917D2B8A4E9700E1B6CD /* Extensions.swift in Sources */,
 				AA63F58E2B836F00009FEFAF /* AppDelegate.swift in Sources */,
 				AAFDA1F82B83C02300863247 /* FortuneTellingViewController.swift in Sources */,
 				AA63F5902B836F00009FEFAF /* SceneDelegate.swift in Sources */,

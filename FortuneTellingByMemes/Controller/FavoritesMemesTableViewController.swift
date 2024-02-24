@@ -9,7 +9,7 @@ import UIKit
 
 class FavoritesMemesTableViewController: UITableViewController {
     
-    private let dataStorage = DataStore.shared
+    private let dataStorе = DataStore.shared
     
     private lazy var warningLabel: UILabel = {
         let label = UILabel()
@@ -25,32 +25,32 @@ class FavoritesMemesTableViewController: UITableViewController {
         view.backgroundColor = .systemGray6
         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
-        if dataStorage.memes.count == 0 {
+        tableView.register(FavoriteMemeCell.self, forCellReuseIdentifier: FavoriteMemeCell.identifier)
+        if dataStorе.memes.count == 0 {
             view.addSubview(warningLabel)
         }
     }
     
     
-    
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 0
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataStorage.memes.count
+        return dataStorе.memes.count
     }
     
-    /*
-     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-     let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-     
-     // Configure the cell...
-     
-     return cell
-     }
-     */
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: FavoriteMemeCell.identifier, for: indexPath) as! FavoriteMemeCell
+        cell.setupCell(meme: dataStorе.memes[indexPath.row])
+        
+        
+        return cell
+    }
+    
     
     /*
      // Override to support conditional editing of the table view.

@@ -10,6 +10,7 @@ import UIKit
 final class FortuneTellingViewController: UIViewController {
     
     private let dataStore = DataStore.shared
+    private let networkManager = NetworkManager.shared
     
     private let downloadedMemes: [Meme]
     
@@ -99,6 +100,7 @@ final class FortuneTellingViewController: UIViewController {
         self.downloadedMemes = downloadedMemes
         self.question = question
         self.questionLabel.text = question
+        self.currentMeme = downloadedMemes.randomElement()!
         super.init(nibName: nil, bundle: nil)
     }
     @available(*, unavailable)
@@ -110,7 +112,9 @@ final class FortuneTellingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
-        fetchMemeImage()
+        networkManager.fetchMemeImage(from: currentMeme) { image in
+            self.memeImageView.image = image
+        }
         animateImageCover(isTransparent: imageCover.isHidden)
     }
     
@@ -161,28 +165,24 @@ final class FortuneTellingViewController: UIViewController {
         ])
     }
     
-    //MARK: Networking
-    private func fetchMemeImage() {
-        let randomMeme = downloadedMemes.randomElement()
-        guard let randomMeme else { return }
+    private func getImage() {
         
-        DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let imageData = try? Data(contentsOf: randomMeme.url) else { return }
-            DispatchQueue.main.async {
-                self?.memeImageView.image = UIImage(data: imageData)
-            }
-        }
     }
     
     //MARK: Actions
     @objc private func rejectAction() {
+        currentMeme = downloadedMemes.randomElement()!
         animateImageCover(isTransparent: imageCover.isHidden)
     }
     
     @objc private func acceptAction() {
         let alertController = UIAlertController(title: "Желаете сохранить предсказание?", message: "Ваше предсказание будет сохранено во вкладку избранное", preferredStyle: .alert)
-        let saveAction = UIAlertAction(title: "Сохранить", style: .destructive) { _ in
+        let saveAction = UIAlertAction(title: "Сохранить", style: .cancel) { [self] _ in
             
+            let meme = Meme(name: currentMeme.name,
+                            url: currentMeme.url,
+                            question: question)
+            dataStore.memes.append(meme)
         }
         let returnAction = UIAlertAction(title: "Вернуться", style: .default)
         alertController.addAction(saveAction)
@@ -224,7 +224,9 @@ final class FortuneTellingViewController: UIViewController {
                 rejectButton.alpha = 0.5
                 
             } completion: { [self] bool in
-                fetchMemeImage()
+                networkManager.fetchMemeImage(from: currentMeme) { image in
+                    self.memeImageView.image = image
+                }
                 animateImageCover(isTransparent: imageCover.isHidden)
             }
             
